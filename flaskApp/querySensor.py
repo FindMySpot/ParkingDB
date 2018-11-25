@@ -108,6 +108,7 @@ sensor1Token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiYXV0aCI6WyJVU0VSX1JFQUQiLCJ
 sensor1Head = {'Authorization': 'Bearer {}'.format(sensor1Token), 'Accept': '*/*'}
 reserve1Url = 'https://iot-starterkit-kd-iot.app.sbb-aws.net/downlink/message?deviceId=70B3D5E75E0036AB'
 reserve1Head = {'':''}
+print("initialized query sensor")
 threadLock = threading.Lock()
 sensorDR1 = sensorThread(sensor1Url, sensor1Head, db, collection, devToSpot)
 reserve1 = reserveThread(reserve1Url, reserve1Head, db, collection, devToSpot)

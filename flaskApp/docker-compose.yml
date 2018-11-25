@@ -1,9 +1,9 @@
 version: '3'
 services:
-  web:
+  webdb:
     build: .
     ports: 
-        - "8080:5000" 
+        - "6060:6000" 
     depends_on:
         - db
   
@@ -15,7 +15,11 @@ services:
     ports:
         - "27017:27017"
 
-  query:
-      build: .
-      depends_on:
+  querysensor:
+    build: .
+    depends_on:
         - db   
+  reschecker:
+    build: .
+    depends_on:
+        - db

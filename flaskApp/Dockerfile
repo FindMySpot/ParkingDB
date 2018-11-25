@@ -6,6 +6,9 @@ ADD requirements.txt .
 RUN pip install -r requirements.txt
 
 ADD main.py .
-ADD querySensor.py .
-CMD flask run --host=0.0.0.0
+
 CMD ["python", "./querySensor.py"]
+CMD ["python", "./reservationChecker.py"]
+
+CMD flask run --host=0.0.0.0
+EXPOSE 6060

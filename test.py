@@ -1,13 +1,26 @@
 import json
 import requests
+import pymongo
+import datetime
+from pymongo import MongoClient
+client = MongoClient()
+db = client.parkingDatabase
+collection = db.testStation1
 
-sensor1Url = 'https://api-sbb.wolkabout.com/api/devices/70B3D54995B37FEA'
-sensor1Token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiYXV0aCI6WyJVU0VSX1JFQUQiLCJVU0VSX1VQREFURSIsIlVTRVJfQ1JFQVRFIiwiVVNFUl9ERUxFVEUiLCJSVUxFX1JFQUQiLCJSVUxFX1VQREFURSIsIlJVTEVfQ1JFQVRFIiwiUlVMRV9ERUxFVEUiLCJERVZJQ0VfUkVBRCIsIkRFVklDRV9VUERBVEUiLCJERVZJQ0VfQ1JFQVRFIiwiREVWSUNFX0RFTEVURSIsIkRFVklDRV9UWVBFX1JFQUQiLCJERVZJQ0VfVFlQRV9VUERBVEUiLCJERVZJQ0VfVFlQRV9DUkVBVEUiLCJERVZJQ0VfVFlQRV9ERUxFVEUiLCJST0xFX1JFQUQiLCJST0xFX1VQREFURSIsIlJPTEVfQ1JFQVRFIiwiUk9MRV9ERUxFVEUiLCJEQVNIQk9BUkRfUkVBRCIsIkRBU0hCT0FSRF9VUERBVEUiLCJEQVNIQk9BUkRfQ1JFQVRFIiwiREFTSEJPQVJEX0RFTEVURSIsIlJFUE9SVF9SRUFEIiwiUkVQT1JUX1VQREFURSIsIlJFUE9SVF9DUkVBVEUiLCJSRVBPUlRfREVMRVRFIiwiUE9JTlRfUkVBRCIsIlBPSU5UX1VQREFURSIsIlBPSU5UX0NSRUFURSIsIlBPSU5UX0RFTEVURSIsIk5PVElGSUNBVElPTl9SRUFEIiwiTU9CSUxFX1JFQUQiLCJURU1QTEFURV9SRUFEIiwiVEVNUExBVEVfVVBEQVRFIiwiVEVNUExBVEVfQ1JFQVRFIiwiVEVNUExBVEVfREVMRVRFIl0sImNvbnRleHQiOjEsInJvbGUiOjIsImV4cCI6MTU0NDEwMTcxM30.v5OmQcdMSeX_nx4NzUVhnLyBFZbm0_3jllhlZPN_wRScziZnbrgzg9_i26Pagfbme6jNLpv4h6Y5m5WMQygrTA'
-sensor1Head = {'Authorization': 'Bearer {}'.format(sensor1Token), 'Accept': '*/*'}
+spotList = collection.find({'occupied':False, 'reserved':False})
+def dtToEpoch(dt):
+    return ((dt - datetime.datetime(1970,1,1)).total_seconds())
+def handleTimeCalc(dt1, dt2):
+    temp = (dt1 - datetime.datetime(1970,1,1)).total_seconds() 
+    return datetime.datetime.fromtimestamp(temp)
+
+now = datetime.datetime.utcnow()
+
+for spot in spotList:
+    for rs in spot["rTimes"]:
+        print(handleTimeCalc( now, rs["date"]))
+
+print("Done")
 
 
-sensor1Data = json.loads(requests.get(sensor1Url, headers=sensor1Head).text)["deviceSensors"]
-sensor1Occupied = bool(lambda y : 'true' == next((x for x in sensor1Data if x["reference"] == "carDetected"), None)["value"])
-testBool = next((x for x in sensor1Data if x["reference"] == "carDetected"), None)["value"]
-sensor1ParkingDuration = float(next((x for x in sensor1Data if x["reference"] == "parkingDuration"), None)["value"])
 
