@@ -1,9 +1,9 @@
 version: '3'
 services:
-  webdb:
+  reservation:
     build: .
     ports: 
-        - "6060:6000" 
+        - "6000:6000" 
     depends_on:
         - db
   
@@ -14,12 +14,3 @@ services:
         - ./data:/data/
     ports:
         - "27017:27017"
-
-  querysensor:
-    build: .
-    depends_on:
-        - db   
-  reschecker:
-    build: .
-    depends_on:
-        - db
