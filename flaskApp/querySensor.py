@@ -81,7 +81,7 @@ print("initialized query sensor")
 threadLock = threading.Lock()
 sensorDR1 = sensorThread(sensor1Url, sensor1Head, db, collection, devToSpot)
 
-while True:
-    sensorDR1.start()
+
+sensorDR1.start()
 
 
