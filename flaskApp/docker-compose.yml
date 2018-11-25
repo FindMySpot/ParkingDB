@@ -15,4 +15,7 @@ services:
     ports:
         - "27017:27017"
 
-   
+  query:
+      build: .
+      depends_on:
+        - db   

@@ -56,13 +56,9 @@ class reserveThread(threading.Thread):
             reserveTime = ""
             reserveDuration = ""
             '''
-            querySpot = collection.find_one({'id':'test1'})
-            print(querySpot)
-            occupied = querySpot["occupied"]
-            print(occupied)
-           
+            querySpot = collection.find_one({'id':'test1'}) 
+            occupied = querySpot["occupied"]   
             reserved = querySpot["reserved"]
-            print(reserved)
             #reserved = True
 
             if not occupied and not reserved: 
@@ -77,6 +73,7 @@ class reserveThread(threading.Thread):
             
                 threadLock.release() 
                 print("Released lock")
+
             else:
                 print("It's already reserved/occupied!")
             time.sleep(1000)
@@ -94,9 +91,9 @@ def calculateLight(reserved, occupied):
         return 1
 
 #client = MongoClient()
-client = MongoClient("mongodb://127.0.0.1:27017")
+client = MongoClient("mongodb://db:27017")
 db = client.parkingDatabase
-collection = db.testStation
+collection = db.testStation1
 
 
 test1 = 'axsense_TEC_Labor'
