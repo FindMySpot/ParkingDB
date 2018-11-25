@@ -2,15 +2,15 @@ version: '3'
 services:
   reservation:
     build: .
+    restart: always
     ports: 
-        - "6000:6000" 
+        - "6000:5000" 
     depends_on:
         - db
   
   db:
     image: mongo
-    volumes:
-        
+    volumes: 
         - ./data:/data/
     ports:
         - "27017:27017"

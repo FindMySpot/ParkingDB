@@ -20,9 +20,9 @@ class sensorThread (threading.Thread):
         db = self.db
         collection = self.collection 
         while True:
+
+            print("CHECK------------------------------------------")
             sensor1Data = json.loads(requests.get(self.url, headers=self.header).text)["deviceSensors"]
-            threadLock.acquire() 
-            print("Acquired the lock")
             sensor1Occupied = jsonBool(next((x for x in sensor1Data if x["reference"] == "carDetected"), None)["value"])
             sensor1ParkingDuration = float(next((x for x in sensor1Data if x["reference"] == "parkingDuration"), None)["value"])
             sensor1Reserved = jsonBool(collection.find_one({'id':'test1'})["reserved"])
@@ -30,53 +30,22 @@ class sensorThread (threading.Thread):
             print(sensor1Reserved)
             print(sensor1ParkingDuration)
             collection.update({'id':'test1'},{'$set':{'occupied': sensor1Occupied, 'parkingDuration':sensor1ParkingDuration, 'light': calculateLight(sensor1Reserved, sensor1Occupied)}})
-
-            threadLock.release()
-            print("Let go of the lock")
-            time.sleep(60)
-
-class reserveThread(threading.Thread):
-    def __init__(self, url_, header_, db_, collection_, keys_):
-        threading.Thread.__init__(self)
-        self.url = url_
-        self.header = header_ 
-        self.db = db_
-        self.collection = collection_
-        self.keys = keys_
-
-    def run(self):
-        collection = self.collection
-        while True:
-            '''
-            #get the request
-            reserveSpotID = ""
-            #query the key value using the spot ID and station name. 
-            #collection = self.db["reserveStation"]
-            #querySpot = json.loads(collection.find_one({'id':reserveSpotID})
-            reserveTime = ""
-            reserveDuration = ""
-            '''
             querySpot = collection.find_one({'id':'test1'}) 
             occupied = querySpot["occupied"]   
             reserved = querySpot["reserved"]
-            #reserved = True
-
             if not occupied and not reserved: 
 
-                threadLock.acquire()
                 print("Acquired lock")
                 print("Turning on the light")
                 req = requests.post(self.url, data={'command':'ON'})
                 collection.update({'id':'test1'},{'$set':{'reserved': True}})
                 print(req)
-                print("Doing shit")  
-            
-                threadLock.release() 
-                print("Released lock")
-
             else:
                 print("It's already reserved/occupied!")
-            time.sleep(1000)
+                req = requests.post(self.url, data={'command':'OFF'})
+                print(req)
+        
+            time.sleep(5)
 
 def jsonBool(jsonbond):
     return jsonbond == 'true'
@@ -111,7 +80,8 @@ reserve1Head = {'':''}
 print("initialized query sensor")
 threadLock = threading.Lock()
 sensorDR1 = sensorThread(sensor1Url, sensor1Head, db, collection, devToSpot)
-reserve1 = reserveThread(reserve1Url, reserve1Head, db, collection, devToSpot)
-sensorDR1.start()
-reserve1.start() 
+
+while True:
+    sensorDR1.start()
+
 

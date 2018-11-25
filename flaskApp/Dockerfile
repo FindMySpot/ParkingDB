@@ -11,3 +11,4 @@ ADD querySensor.py .
 ADD reservationChecker.py .
 
 CMD ./entrypoint.sh
+EXPOSE 6000

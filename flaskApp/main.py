@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
+import requests
 import os
 import datetime
 import pymongo
@@ -72,4 +73,18 @@ def make_reservation(rtime, dur, stationName):
     print("reservation failed!")
     return False
        
+@app.route('/reserveone', methods=['POST'])
+def make_oneres():
+    switchUrl = 'https://iot-starterkit-kd-iot.app.sbb-aws.net/downlink/message?deviceId=70B3D5E75E0036AB'
+    switchData = {'command':'ON'}
+    reply = requests.post(switchUrl, data=switchData)
+    print(reply)
+    return "SUCCESS"
 
+@app.route('/cancelone', methods=['POST'])
+def cancel_oneres():
+    switchUrl = 'https://iot-starterkit-kd-iot.app.sbb-aws.net/downlink/message?deviceId=70B3D5E75E0036AB'
+    switchData = {'command':'OFF'}
+    reply = requests.post(switchUrl, data=switchData)
+    print(reply) 
+    return "SUCCESS"

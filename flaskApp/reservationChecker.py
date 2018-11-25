@@ -24,6 +24,7 @@ def compareDtGEQ(ep1, ep2):
 print("Initialized reservation checker")
 while True: 
     
+    print("CHECK---------------------------------")
     now = datetime.datetime.utcnow()
     for s in stations:
         #print("Loop1")
@@ -52,4 +53,4 @@ while True:
                         db[s].update({'id':tempId}, {'$set':{'reserved':False}})
                         db[s].update({'id':tempId}, {'$pull':{'rTimes':{'date':rBook['date']}}})
                         print("Got rid of old reservation")
-    time.sleep(300)
+    time.sleep(5)
